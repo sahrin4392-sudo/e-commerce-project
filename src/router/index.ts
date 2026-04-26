@@ -19,6 +19,21 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../pages/ProductDetail.vue'),
   },
   {
+    path: '/categories',
+    name: 'Categories',
+    component: () => import('../pages/Categories.vue'),
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: () => import('../pages/About.vue'),
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: () => import('../pages/Contact.vue'),
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../pages/Login.vue'),

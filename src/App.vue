@@ -19,4 +19,8 @@
 import NavBar from './components/NavBar.vue';
 import Footer from './components/Footer.vue';
 import CartDrawer from './components/CartDrawer.vue';
+import { useThemeStore } from './stores/theme';
+
+// Initialize theme on app load
+const themeStore = useThemeStore();
 </script>
