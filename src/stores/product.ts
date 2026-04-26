@@ -10,6 +10,8 @@ export const useProductStore = defineStore('product', () => {
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
+  const searchSuggestions = ref<Product[]>([]);
+
   async function fetchProducts(limit = 12, skip = 0) {
     isLoading.value = true;
     error.value = null;
@@ -54,6 +56,19 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
+  async function getSuggestions(query: string) {
+    if (!query.trim()) {
+      searchSuggestions.value = [];
+      return;
+    }
+    try {
+      const response = await api.searchProducts(query);
+      searchSuggestions.value = response.data.products.slice(0, 6);
+    } catch (err) {
+      console.error('Suggestions failed', err);
+    }
+  }
+
   async function filterByCategory(category: string) {
     isLoading.value = true;
     try {
@@ -70,12 +85,14 @@ export const useProductStore = defineStore('product', () => {
     products,
     featuredProducts,
     categories,
+    searchSuggestions,
     isLoading,
     error,
     fetchProducts,
     fetchFeaturedProducts,
     fetchCategories,
     searchProducts,
+    getSuggestions,
     filterByCategory
   };
 });

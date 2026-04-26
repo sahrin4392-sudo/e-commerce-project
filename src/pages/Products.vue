@@ -116,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useProductStore } from '../stores/product';
 import ProductCard from '../components/ProductCard.vue';
@@ -127,60 +127,45 @@ const route = useRoute();
 const router = useRouter();
 const productStore = useProductStore();
 
-const activeCategory = ref(route.query.category as string || '');
-const searchQuery = ref(route.query.q as string || '');
-const searchInput = ref(searchQuery.value);
+const searchInput = ref('');
 const sortBy = ref('featured');
+
+const activeCategory = computed(() => route.query.category as string);
+const searchQuery = computed(() => route.query.q as string);
 
 onMounted(async () => {
   if (productStore.categories.length === 0) {
-    productStore.fetchCategories();
+    await productStore.fetchCategories();
   }
-  loadProducts();
+  fetchProducts();
 });
 
 watch(() => route.query, () => {
-  activeCategory.value = route.query.category as string || '';
-  searchQuery.value = route.query.q as string || '';
-  searchInput.value = searchQuery.value;
-  loadProducts();
-});
+  fetchProducts();
+}, { deep: true });
 
-async function loadProducts() {
-  if (searchQuery.value) {
-    await productStore.searchProducts(searchQuery.value);
-  } else if (activeCategory.value) {
-    await productStore.filterByCategory(activeCategory.value);
-  } else {
-    await productStore.fetchProducts(24, 0);
-  }
-  handleSort(); // Re-apply sort after loading
-}
-
-function handleSearch() {
-  if (searchInput.value.trim()) {
-    router.push({ query: { ...route.query, q: searchInput.value, category: undefined } });
-  } else {
-    clearFilters();
-  }
+async function fetchProducts() {
+  await productStore.fetchProducts({
+    category: activeCategory.value,
+    search: searchQuery.value,
+    sortBy: sortBy.value
+  });
 }
 
 function selectCategory(category: string) {
-  router.push({ query: { category } });
+  router.push({ query: { ...route.query, category, q: undefined } });
 }
 
 function clearFilters() {
-  searchInput.value = '';
   router.push({ query: {} });
+  searchInput.value = '';
+}
+
+function handleSearch() {
+  router.push({ query: { ...route.query, q: searchInput.value, category: undefined } });
 }
 
 function handleSort() {
-  if (sortBy.value === 'price-low') {
-    productStore.products.sort((a, b) => a.price - b.price);
-  } else if (sortBy.value === 'price-high') {
-    productStore.products.sort((a, b) => b.price - a.price);
-  } else if (sortBy.value === 'rating') {
-    productStore.products.sort((a, b) => b.rating - a.rating);
-  }
+  fetchProducts();
 }
 </script>

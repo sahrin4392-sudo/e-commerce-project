@@ -30,6 +30,10 @@ export default {
       fontFamily: {
         sans: ['Poppins', 'sans-serif'],
       },
+      boxShadow: {
+        'gold': '0 4px 14px 0 rgba(212, 175, 55, 0.39)',
+        'gold-hover': '0 6px 20px rgba(212, 175, 55, 0.23)',
+      },
     },
   },
   plugins: [],

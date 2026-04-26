@@ -13,20 +13,28 @@
         </div>
 
         <!-- Desktop Navigation -->
-        <nav class="hidden md:flex space-x-8">
+        <nav class="hidden md:flex items-center space-x-8">
           <router-link 
             v-for="link in navLinks" 
             :key="link.path"
             :to="link.path" 
-            class="nav-link"
-            active-class="nav-link-active"
+            class="text-slate-600 dark:text-slate-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium transition-colors uppercase text-sm tracking-wider"
+            active-class="text-primary-500 font-bold"
           >
             {{ link.name }}
           </router-link>
+
+          <!-- Global Search Integration -->
+          <GlobalSearch class="ml-4" />
         </nav>
 
         <!-- Right side actions -->
         <div class="flex items-center gap-2 md:gap-4">
+          <!-- Mobile Search Integration -->
+          <div class="md:hidden">
+            <GlobalSearch />
+          </div>
+
           <!-- Theme Toggle -->
           <button 
             @click="themeStore.toggleTheme" 
@@ -93,6 +101,7 @@ import { ShoppingCartIcon, MenuIcon, XIcon, SunIcon, MoonIcon } from 'lucide-vue
 import { useCartStore } from '../stores/cart';
 import { useAuthStore } from '../stores/auth';
 import { useThemeStore } from '../stores/theme';
+import GlobalSearch from './GlobalSearch.vue';
 
 const cartStore = useCartStore();
 const authStore = useAuthStore();
@@ -107,22 +116,3 @@ const navLinks = [
   { name: 'Contact', path: '/contact' },
 ];
 </script>
-
-<style scoped>
-.nav-link {
-  @apply text-slate-600 dark:text-slate-300 hover:text-primary-500 dark:hover:text-primary-500 font-medium transition-colors uppercase text-sm tracking-wider relative py-2;
-}
-
-.nav-link::after {
-  content: '';
-  @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300;
-}
-
-.nav-link:hover::after, .nav-link-active::after {
-  @apply w-full;
-}
-
-.nav-link-active {
-  @apply text-primary-500 font-bold;
-}
-</style>
