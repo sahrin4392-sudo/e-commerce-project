@@ -20,7 +20,7 @@
       <form class="space-y-8" @submit.prevent="handleLogin">
         <div class="space-y-6">
           <div class="group">
-            <label for="username" class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 group-focus-within:text-primary-500 transition-colors">Personal Username</label>
+            <label for="username" class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 group-focus-within:text-primary-500 transition-colors">Email / Username</label>
             <input 
               id="username" 
               name="username" 
@@ -28,15 +28,20 @@
               required 
               v-model="username"
               class="w-full bg-white dark:bg-dark-bg border border-slate-200 dark:border-white/10 rounded-2xl px-6 py-4 text-slate-900 dark:text-white focus:border-primary-500 outline-none transition-all shadow-sm" 
-              placeholder="e.g. emilys"
+              placeholder="e.g. emilys or emily.smith@example.com"
             >
           </div>
-          <div class="group">
-            <label for="password" class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 group-focus-within:text-primary-500 transition-colors">Access Password</label>
+          <div class="group relative">
+            <div class="flex justify-between items-center mb-3">
+              <label for="password" class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest group-focus-within:text-primary-500 transition-colors">Access Password</label>
+              <button type="button" @click="showPassword = !showPassword" class="text-[10px] font-bold text-primary-500 uppercase tracking-widest hover:text-primary-400 transition-colors">
+                {{ showPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
             <input 
               id="password" 
               name="password" 
-              type="password" 
+              :type="showPassword ? 'text' : 'password'" 
               required 
               v-model="password"
               class="w-full bg-white dark:bg-dark-bg border border-slate-200 dark:border-white/10 rounded-2xl px-6 py-4 text-slate-900 dark:text-white focus:border-primary-500 outline-none transition-all shadow-sm" 
@@ -72,8 +77,12 @@
         </button>
       </form>
       
-      <div class="text-center pt-8 border-t border-slate-100 dark:border-white/5">
-        <a href="#" class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest hover:text-primary-500 transition-colors">Forgotten Access Credentials?</a>
+      <div class="text-center pt-8 border-t border-slate-100 dark:border-white/5 space-y-4">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+          New to the collective? 
+          <router-link to="/signup" class="text-primary-500 hover:text-primary-400 ml-1 transition-colors">Apply for Membership</router-link>
+        </p>
+        <a href="#" class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest hover:text-primary-500 transition-colors">Forgotten Access Credentials?</a>
       </div>
     </div>
   </div>
@@ -90,6 +99,7 @@ const authStore = useAuthStore();
 
 const username = ref('emilys');
 const password = ref('emilyspass');
+const showPassword = ref(false);
 
 async function handleLogin() {
   try {

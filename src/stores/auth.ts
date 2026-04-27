@@ -37,6 +37,25 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function signup(userData: any) {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      // DummyJSON doesn't persist new users, so we simulate a successful registration
+      // In a real app, this would be an API call
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          isLoading.value = false;
+          resolve({ data: { message: 'Registration successful' } });
+        }, 1500);
+      });
+    } catch (err: any) {
+      error.value = 'Registration failed';
+      isLoading.value = false;
+      throw err;
+    }
+  }
+
   function logout() {
     user.value = null;
     token.value = null;
@@ -44,5 +63,5 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('user');
   }
 
-  return { user, token, isLoading, error, login, logout };
+  return { user, token, isLoading, error, login, signup, logout };
 });
