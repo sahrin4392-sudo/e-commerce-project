@@ -128,10 +128,12 @@
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCartStore } from '../stores/cart';
+import { useOrderStore } from '../stores/order';
 import { CreditCardIcon, ArrowRightIcon, ShieldCheckIcon } from 'lucide-vue-next';
 
 const router = useRouter();
 const cartStore = useCartStore();
+const orderStore = useOrderStore();
 const isProcessing = ref(false);
 
 const form = reactive({
@@ -142,14 +144,21 @@ const form = reactive({
 });
 
 async function processPayment() {
+  if (cartStore.items.length === 0) return;
+  
   isProcessing.value = true;
   
   // Simulate payment processing
   setTimeout(() => {
     isProcessing.value = false;
-    alert('Payment successful! Your collective order is being prepared.');
+    
+    // Create actual simulated order
+    orderStore.createOrder(cartStore.items, cartStore.totalPrice);
+    
     cartStore.clearCart();
-    router.push('/dashboard');
+    
+    // Redirect to tracking page
+    router.push({ path: '/order-tracking' });
   }, 2000);
 }
 </script>

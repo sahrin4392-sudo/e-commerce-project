@@ -37,7 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function signup(userData: any) {
+  async function signup(_userData: Record<string, string>) {
     isLoading.value = true;
     error.value = null;
     try {

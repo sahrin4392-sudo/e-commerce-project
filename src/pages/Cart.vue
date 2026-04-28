@@ -13,14 +13,35 @@
         </router-link>
       </div>
 
-      <div v-if="cartStore.items.length === 0" class="text-center py-24 bg-slate-50 dark:bg-dark-surface rounded-2xl border border-slate-100 dark:border-white/5 shadow-xl">
+      <!-- Loading State -->
+      <div v-if="isLoading" class="flex flex-col lg:flex-row gap-12">
+        <div class="flex-1 space-y-6">
+          <CartItemSkeleton v-for="i in 3" :key="i" />
+        </div>
+        <div class="w-full lg:w-96 shrink-0">
+          <div class="bg-slate-50 dark:bg-dark-surface rounded-2xl p-8 border border-slate-100 dark:border-white/5 space-y-8">
+            <Skeleton width="40%" height="24px" :shimmer="true" />
+            <div class="space-y-4">
+              <div v-for="i in 3" :key="i" class="flex justify-between">
+                <Skeleton width="60px" height="12px" :shimmer="true" />
+                <Skeleton width="40px" height="12px" :shimmer="true" />
+              </div>
+            </div>
+            <Skeleton width="100%" height="56px" :shimmer="true" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div v-else-if="cartStore.items.length === 0" class="text-center py-24 bg-slate-50 dark:bg-dark-surface rounded-2xl border border-slate-100 dark:border-white/5 shadow-xl animate-fade-in">
         <ShoppingCartIcon class="w-16 h-16 text-slate-300 mx-auto mb-6" />
         <h2 class="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-tight mb-4">Your bag is empty</h2>
         <p class="text-slate-500 dark:text-slate-400 mb-10 max-w-sm mx-auto">Explore our collections and discover pieces that speak to your style.</p>
         <router-link to="/products" class="btn-primary py-4 px-8 text-xs uppercase tracking-widest font-bold">Shop Collections</router-link>
       </div>
 
-      <div v-else class="flex flex-col lg:flex-row gap-12">
+      <!-- Cart Content -->
+      <div v-else class="flex flex-col lg:flex-row gap-12 animate-fade-in">
         <!-- Cart Items list -->
         <div class="flex-1 space-y-6">
           <div v-for="item in cartStore.items" :key="item.id" class="group bg-white dark:bg-dark-surface p-6 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-6 items-center sm:items-stretch">
@@ -33,7 +54,7 @@
               <div class="flex justify-between items-start gap-4">
                 <div>
                   <h3 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight cursor-pointer hover:text-primary-500 transition-colors" @click="$router.push(`/product/${item.id}`)">{{ item.title }}</h3>
-                  <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">{{ typeof item.category === 'object' ? item.category.name : item.category }}</p>
+                  <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">{{ getCategoryName(item.category) }}</p>
                 </div>
                 <p class="text-lg font-bold text-slate-900 dark:text-white tracking-tighter">${{ (item.price * item.quantity).toFixed(2) }}</p>
               </div>
@@ -104,14 +125,27 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { useCartStore } from '../stores/cart';
 import { useAuthStore } from '../stores/auth';
 import { useRouter } from 'vue-router';
+import CartItemSkeleton from '../components/CartItemSkeleton.vue';
+import Skeleton from '../components/Skeleton.vue';
 import { ShoppingCartIcon, MinusIcon, PlusIcon, Trash2Icon, ArrowRightIcon, ShieldCheckIcon } from 'lucide-vue-next';
+import { getCategoryName } from '../types';
 
 const cartStore = useCartStore();
 const authStore = useAuthStore();
 const router = useRouter();
+
+const isLoading = ref(true);
+
+onMounted(() => {
+  // Simulate minor loading delay for visual polish
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 800);
+});
 
 function handleCheckout() {
   if (!authStore.token) {
@@ -123,3 +157,14 @@ function handleCheckout() {
   router.push('/payment');
 }
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+</style>

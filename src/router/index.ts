@@ -1,6 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
-import Home from '../pages/Home.vue';
+
+// Lazy load all pages for better production performance
+const Home = () => import('../pages/Home.vue');
+const Products = () => import('../pages/Products.vue');
+const ProductDetail = () => import('../pages/ProductDetail.vue');
+const Categories = () => import('../pages/Categories.vue');
+const Signup = () => import('../pages/Signup.vue');
+const Login = () => import('../pages/Login.vue');
+const Cart = () => import('../pages/Cart.vue');
+const Wishlist = () => import('../pages/Wishlist.vue');
+const Payment = () => import('../pages/Payment.vue');
+const Dashboard = () => import('../pages/Dashboard.vue');
+const OrderTracking = () => import('../pages/OrderTracking.vue');
+const PageNotFound = () => import('../pages/PageNotFound.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -11,65 +24,74 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/products',
     name: 'Products',
-    component: () => import('../pages/Products.vue'),
+    component: Products,
   },
   {
     path: '/product/:id',
     name: 'ProductDetail',
-    component: () => import('../pages/ProductDetail.vue'),
+    component: ProductDetail,
   },
   {
     path: '/categories',
     name: 'Categories',
-    component: () => import('../pages/Categories.vue'),
-  },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import('../pages/About.vue'),
-  },
-  {
-    path: '/contact',
-    name: 'Contact',
-    component: () => import('../pages/Contact.vue'),
+    component: Categories,
   },
   {
     path: '/signup',
     name: 'Signup',
-    component: () => import('../pages/Signup.vue'),
+    component: Signup,
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../pages/Login.vue'),
+    component: Login,
   },
   {
     path: '/cart',
     name: 'Cart',
-    component: () => import('../pages/Cart.vue'),
+    component: Cart,
+  },
+  {
+    path: '/wishlist',
+    name: 'Wishlist',
+    component: Wishlist,
   },
   {
     path: '/payment',
     name: 'Payment',
-    component: () => import('../pages/Payment.vue'),
+    component: Payment,
     meta: { requiresAuth: true }
   },
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: () => import('../pages/Dashboard.vue'),
+    component: Dashboard,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/order-tracking',
+    name: 'OrderTracking',
+    component: OrderTracking
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: PageNotFound
   }
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior() {
-    return { top: 0 };
+  scrollBehavior(_to, _from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    }
+    return { top: 0, behavior: 'smooth' };
   }
 });
 
+// Navigation Guard
 router.beforeEach((to, _from, next) => {
   const token = localStorage.getItem('token');
   if (to.meta.requiresAuth && !token) {

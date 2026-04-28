@@ -5,10 +5,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 font-sans transition-colors duration-300 dark:bg-dark-bg dark:text-slate-100;
+    @apply bg-slate-50 text-slate-900 font-sans transition-colors duration-500 dark:bg-dark-bg dark:text-slate-100 antialiased;
   }
 
   ::selection {
@@ -17,47 +18,89 @@
 }
 
 @layer components {
+
+  /* Premium Button System */
   .btn-primary {
-    @apply bg-primary-500 text-white dark:text-dark-bg font-bold py-3 px-6 rounded-none shadow-gold hover:bg-primary-400 hover:shadow-gold-hover transition-all duration-300 active:scale-95;
+    @apply relative overflow-hidden bg-primary-500 text-white dark:text-dark-bg font-bold py-4 px-8 rounded-none shadow-gold hover:bg-primary-400 hover:shadow-gold-hover transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 uppercase tracking-[0.2em] text-[10px];
   }
 
   .btn-secondary {
-    @apply bg-transparent text-primary-500 font-bold py-3 px-6 rounded-none border-2 border-primary-500 hover:bg-primary-500/10 transition-all duration-300 active:scale-95;
+    @apply relative overflow-hidden bg-transparent text-primary-500 font-bold py-4 px-8 rounded-none border-2 border-primary-500 hover:bg-primary-500/10 transition-all duration-300 active:scale-95 flex items-center justify-center gap-3 uppercase tracking-[0.2em] text-[10px];
   }
 
+  /* Refined Glassmorphism */
   .glass-card {
-    @apply bg-white/80 dark:bg-dark-surface/80 backdrop-blur-md border border-slate-200 dark:border-white/5 shadow-xl dark:shadow-2xl rounded-xl transition-all duration-300;
+    @apply bg-white/70 dark:bg-dark-surface/60 backdrop-blur-xl border border-slate-200/50 dark:border-white/5 shadow-xl dark:shadow-2xl rounded-2xl transition-all duration-500;
   }
 
+  /* Inputs */
   .input-field {
-    @apply w-full px-4 py-3 bg-white dark:bg-dark-surface border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-1 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-200 rounded-md;
+    @apply w-full bg-white dark:bg-dark-bg border border-slate-200 dark:border-white/10 rounded-2xl px-6 py-4 text-slate-900 dark:text-white focus:border-primary-500 outline-none transition-all shadow-sm placeholder:text-slate-400 dark:placeholder:text-slate-600 text-sm;
+  }
+
+  /* Typography */
+  .section-title {
+    @apply text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-6 leading-[0.9] text-slate-900 dark:text-white;
+  }
+
+  .luxury-label {
+    @apply text-primary-500 uppercase tracking-[0.4em] text-[10px] font-bold block mb-4;
   }
 }
 
-@layer utilities {
-  .text-glow {
-    text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-50 dark:bg-dark-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300/50 dark:bg-white/10 rounded-full hover:bg-primary-500/30 transition-colors;
+}
+
+/* Transitions & Animations */
+.fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.slide-up {
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }
 
-/* Animations */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+.text-glow {
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
 }
 
-.slide-up-enter-active,
-.slide-up-leave-active {
-  transition: all 0.3s ease-out;
+/* Layout Utilities */
+.page-container {
+  @apply max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 py-20 md:py-32;
 }
 
-.slide-up-enter-from,
-.slide-up-leave-to {
-  opacity: 0;
-  transform: translateY(20px);
+.grid-layout {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-10;
 }

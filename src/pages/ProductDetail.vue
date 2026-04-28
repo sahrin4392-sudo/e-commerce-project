@@ -1,16 +1,11 @@
 <template>
   <div class="bg-white dark:bg-dark-bg min-h-screen transition-colors duration-500">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-      <div v-if="isLoading" class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        <div class="aspect-square bg-slate-100 dark:bg-white/5 animate-pulse rounded-xl"></div>
-        <div class="space-y-8">
-          <div class="h-10 bg-slate-100 dark:bg-white/5 animate-pulse rounded-lg w-3/4"></div>
-          <div class="h-6 bg-slate-100 dark:bg-white/5 animate-pulse rounded-lg w-1/4"></div>
-          <div class="h-32 bg-slate-100 dark:bg-white/5 animate-pulse rounded-lg"></div>
-          <div class="h-12 bg-slate-100 dark:bg-white/5 animate-pulse rounded-lg w-1/2"></div>
-        </div>
-      </div>
+      
+      <!-- Loading State -->
+      <ProductDetailSkeleton v-if="isLoading" />
 
+      <!-- Product Content -->
       <div v-else-if="product" class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <!-- Image Gallery -->
         <div class="space-y-4">
@@ -36,7 +31,7 @@
             <span class="mx-2">/</span>
             <router-link to="/products" class="hover:text-primary-500">Shop</router-link>
             <span class="mx-2">/</span>
-            <span class="text-slate-900 dark:text-white">{{ typeof product.category === 'object' ? product.category.name : product.category }}</span>
+            <span class="text-slate-900 dark:text-white">{{ getCategoryName(product.category) }}</span>
           </nav>
 
           <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white uppercase tracking-tight mb-4">
@@ -88,8 +83,12 @@
                 <ShoppingCartIcon class="w-4 h-4" />
                 Add To Cart
               </button>
-              <button class="px-6 py-4 rounded-none border-2 border-slate-200 dark:border-white/10 text-slate-400 hover:border-primary-500 hover:text-primary-500 transition-all flex items-center justify-center">
-                <HeartIcon class="w-5 h-5" />
+              <button 
+                @click="wishlistStore.toggleWishlist(product)"
+                class="px-6 py-4 rounded-none border-2 transition-all flex items-center justify-center"
+                :class="wishlistStore.isInWishlist(product.id) ? 'border-primary-500 text-primary-500 bg-primary-500/5' : 'border-slate-200 dark:border-white/10 text-slate-400 hover:border-primary-500 hover:text-primary-500'"
+              >
+                <HeartIcon class="w-5 h-5" :class="{ 'fill-current': wishlistStore.isInWishlist(product.id) }" />
               </button>
             </div>
             
@@ -107,6 +106,7 @@
         </div>
       </div>
       
+      <!-- Not Found State -->
       <div v-else class="text-center py-24 bg-slate-50 dark:bg-dark-surface rounded-2xl border border-slate-100 dark:border-white/5 shadow-xl">
         <PackageIcon class="w-16 h-16 text-slate-300 mx-auto mb-6" />
         <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 uppercase tracking-tight">Product Not Found</h2>
@@ -120,8 +120,11 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import type { Product } from '../types';
+import { getCategoryName } from '../types';
 import api from '../services/api';
 import { useCartStore } from '../stores/cart';
+import { useWishlistStore } from '../stores/wishlist';
+import ProductDetailSkeleton from '../components/ProductDetailSkeleton.vue';
 import { 
   StarIcon, MinusIcon, PlusIcon, 
   ShoppingCartIcon, HeartIcon, TruckIcon, ShieldCheckIcon, PackageIcon 
@@ -129,6 +132,7 @@ import {
 
 const route = useRoute();
 const cartStore = useCartStore();
+const wishlistStore = useWishlistStore();
 
 const product = ref<Product | null>(null);
 const isLoading = ref(true);
@@ -159,3 +163,14 @@ function handleAddToCart() {
   }
 }
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+</style>

@@ -37,7 +37,7 @@
                 <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-tight line-clamp-2 leading-relaxed">{{ item.title }}</h3>
                 <p class="text-xs font-bold text-slate-900 dark:text-white tracking-tighter">${{ ((item.price * (1 - item.discountPercentage / 100)) * item.quantity).toFixed(2) }}</p>
               </div>
-              <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold mb-6">{{ typeof item.category === 'object' ? item.category.name : item.category }}</p>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold mb-6">{{ getCategoryName(item.category) }}</p>
               
               <div class="flex items-center justify-between mt-auto">
                 <div class="flex items-center border border-slate-100 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-dark-bg p-0.5">
@@ -79,7 +79,8 @@
 
 <script setup lang="ts">
 import { useCartStore } from '../stores/cart';
-import { XIcon, ShoppingCartIcon, PlusIcon, MinusIcon, ArrowRightIcon, CreditCardIcon } from 'lucide-vue-next';
+import { XIcon, ShoppingCartIcon, PlusIcon, MinusIcon, CreditCardIcon } from 'lucide-vue-next';
+import { getCategoryName } from '../types';
 
 const cartStore = useCartStore();
 </script>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { ProductsResponse, Product, User } from '../types';
 
-const API_URL = 'https://dummyjson.com';
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://dummyjson.com';
 
 const apiClient = axios.create({
   baseURL: API_URL,
@@ -18,7 +18,9 @@ export default {
     return apiClient.get<Product>(`/products/${id}`);
   },
   searchProducts(query: string) {
-    return apiClient.get<ProductsResponse>(`/products/search?q=${query}`);
+    // Basic sanitization: remove special characters that might break API calls
+    const sanitizedQuery = query.replace(/[^\w\s-]/gi, '');
+    return apiClient.get<ProductsResponse>(`/products/search?q=${sanitizedQuery}`);
   },
   getCategories() {
     return apiClient.get<string[]>('/products/categories');

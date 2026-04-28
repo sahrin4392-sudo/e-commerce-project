@@ -45,7 +45,16 @@
             <MoonIcon v-else class="w-5 h-5" />
           </button>
 
-          <button @click="cartStore.toggleDrawer" class="relative p-2 text-slate-600 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-500 transition-colors">
+          <!-- Wishlist Toggle -->
+          <router-link to="/wishlist" class="relative p-2 text-slate-600 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-500 transition-colors" title="Wishlist">
+            <HeartIcon class="w-6 h-6" />
+            <span v-if="wishlistStore.totalItems > 0" class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary-500 rounded-full">
+              {{ wishlistStore.totalItems }}
+            </span>
+          </router-link>
+
+          <!-- Cart Toggle -->
+          <button @click="cartStore.toggleDrawer" class="relative p-2 text-slate-600 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-500 transition-colors" title="Shopping Cart">
             <ShoppingCartIcon class="w-6 h-6" />
             <span v-if="cartStore.totalItems > 0" class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary-500 rounded-full">
               {{ cartStore.totalItems }}
@@ -95,6 +104,14 @@
                     >
                       <UserIcon class="w-4 h-4" />
                       Client Profile
+                    </router-link>
+                    <router-link 
+                      to="/wishlist" 
+                      @click="isProfileMenuOpen = false"
+                      class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-primary-500 rounded-xl transition-all uppercase tracking-widest"
+                    >
+                      <HeartIcon class="w-4 h-4" />
+                      Wishlist
                     </router-link>
                     <router-link 
                       to="/cart" 
@@ -160,6 +177,10 @@
                 <UserIcon class="w-5 h-5" />
                 Dashboard
               </router-link>
+              <router-link to="/wishlist" @click="isMobileMenuOpen = false" class="block px-4 py-3 text-base font-medium text-slate-600 dark:text-slate-300 hover:text-primary-500 rounded-lg uppercase tracking-wider flex items-center gap-3">
+                <HeartIcon class="w-5 h-5" />
+                Wishlist
+              </router-link>
               <button @click="handleLogout" class="w-full text-left px-4 py-3 text-base font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg uppercase tracking-wider flex items-center gap-3 transition-colors">
                 <LogOutIcon class="w-5 h-5" />
                 Sign Out
@@ -178,16 +199,18 @@ import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { 
   ShoppingCartIcon, MenuIcon, XIcon, SunIcon, MoonIcon, 
-  UserIcon, LogOutIcon, ChevronDownIcon 
+  UserIcon, LogOutIcon, ChevronDownIcon, HeartIcon 
 } from 'lucide-vue-next';
 import { useCartStore } from '../stores/cart';
 import { useAuthStore } from '../stores/auth';
+import { useWishlistStore } from '../stores/wishlist';
 import { useThemeStore } from '../stores/theme';
 import GlobalSearch from './GlobalSearch.vue';
 
 const router = useRouter();
 const cartStore = useCartStore();
 const authStore = useAuthStore();
+const wishlistStore = useWishlistStore();
 const { user, token } = storeToRefs(authStore);
 const themeStore = useThemeStore();
 

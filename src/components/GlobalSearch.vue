@@ -102,11 +102,13 @@ const isExpanded = ref(false);
 const showSuggestions = ref(false);
 const isMobile = ref(window.innerWidth < 640);
 
-const debouncedSearch = useDebounceFn(() => {
+const debouncedSearch = useDebounceFn(async () => {
   if (query.value.length >= 2) {
-    productStore.getSuggestions(query.value);
+    await productStore.fetchProducts({ search: query.value, limit: 5 });
+    productStore.searchSuggestions = productStore.products.slice(0, 5);
     showSuggestions.value = true;
   } else {
+    productStore.searchSuggestions = [];
     showSuggestions.value = false;
   }
 }, 300);
