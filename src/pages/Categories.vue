@@ -1,49 +1,63 @@
 <template>
-  <div class="py-10 md:py-14">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <section class="luxury-page-hero group mb-12 md:mb-16 fade-in">
+  <div class="bg-white py-10 transition-colors duration-500 dark:bg-dark-bg md:py-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section class="luxury-page-hero group mb-14 min-h-[26rem] fade-in md:min-h-[32rem]">
         <img
-          src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1800&q=80"
+          src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1800&q=85"
           alt="Luxury category editorial"
-          class="luxury-hero-bg group-hover:scale-[1.03]"
+          class="luxury-hero-bg opacity-70 group-hover:scale-[1.03]"
           loading="eager"
         >
-        <div class="luxury-hero-overlay"></div>
-        <div class="luxury-hero-content">
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,rgba(212,175,55,0.22),transparent_30%)]"></div>
+        <div class="relative z-10 flex min-h-[26rem] flex-col justify-end px-6 py-10 md:min-h-[32rem] md:px-12 md:py-14">
           <span class="luxury-label !mb-3">Curated Departments</span>
-          <h1 class="luxury-hero-title">Shop By Category</h1>
-          <p class="luxury-hero-copy">
-            Move through focused edits across fashion, technology, accessories, and refined living.
+          <h1 class="max-w-4xl text-5xl font-bold uppercase leading-none tracking-tight text-white md:text-7xl">
+            Shop By Category
+          </h1>
+          <p class="mt-6 max-w-2xl text-base leading-8 text-slate-300">
+            Eight premium shopping rooms with rich visuals, refined products, smooth interactions, and editorial-grade curation.
           </p>
         </div>
       </section>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <router-link 
-          v-for="category in categories" 
-          :key="category.id" 
-          :to="`/products?category=${category.slug}`"
-          class="group relative h-96 overflow-hidden rounded-[2rem] block shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary-500/10"
+      <div class="grid grid-cols-1 gap-7 md:grid-cols-2 xl:grid-cols-4">
+        <router-link
+          v-for="(category, index) in luxuryCollections"
+          :key="category.slug"
+          :to="`/collection/${category.slug}`"
+          :class="[
+            'group relative min-h-[26rem] overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950 shadow-xl transition-all duration-700 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary-500/15',
+            index === 0 || index === 7 ? 'xl:col-span-2' : ''
+          ]"
         >
-          <!-- Background Image -->
-          <div class="absolute inset-0">
-            <img 
-              :src="category.image" 
-              :alt="category.name" 
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+          <img
+            :src="category.image"
+            :alt="category.title"
+            class="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-[1400ms] group-hover:scale-110"
+          >
+          <div :class="['absolute inset-0 bg-gradient-to-t', category.accent]"></div>
+          <div class="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100 bg-[radial-gradient(circle_at_50%_25%,rgba(255,255,255,0.2),transparent_28%)]"></div>
+
+          <div class="absolute left-7 top-7 flex items-center gap-3">
+            <span class="h-px w-10 bg-primary-400"></span>
+            <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-white/75">
+              {{ category.productCount }}
+            </span>
           </div>
-          
-          <!-- Content -->
-          <div class="absolute inset-0 p-8 flex flex-col justify-end">
-            <h3 class="text-2xl font-bold text-white mb-2 uppercase tracking-wide transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">{{ category.name }}</h3>
-            <p class="text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 flex items-center gap-2">
-              Explore Collection
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
+
+          <div class="absolute inset-x-0 bottom-0 p-8 text-white">
+            <span class="luxury-label !mb-3 !text-primary-300">{{ category.eyebrow }}</span>
+            <h2 class="text-4xl font-bold uppercase leading-none tracking-tight md:text-5xl">
+              {{ category.title }}
+            </h2>
+            <p class="mt-5 text-sm leading-7 text-slate-200">
+              {{ category.description }}
             </p>
+            <div class="mt-7 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white transition-colors group-hover:text-primary-300">
+              Explore Collection
+              <ArrowRightIcon class="h-4 w-4 transition-transform group-hover:translate-x-2" />
+            </div>
           </div>
         </router-link>
       </div>
@@ -52,30 +66,6 @@
 </template>
 
 <script setup lang="ts">
-const categories = [
-  {
-    id: 1,
-    name: 'Fashion',
-    slug: 'womens-dresses',
-    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80'
-  },
-  {
-    id: 2,
-    name: 'Electronics',
-    slug: 'laptops',
-    image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80'
-  },
-  {
-    id: 3,
-    name: 'Accessories',
-    slug: 'womens-watches',
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1598&q=80'
-  },
-  {
-    id: 4,
-    name: 'Lifestyle',
-    slug: 'home-decoration',
-    image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1738&q=80'
-  }
-];
+import { ArrowRightIcon } from 'lucide-vue-next';
+import { luxuryCollections } from '../data/luxuryCollections';
 </script>

@@ -135,6 +135,7 @@ import { useRoute } from 'vue-router';
 import type { Product } from '../types';
 import { getCategoryName } from '../types';
 import api from '../services/api';
+import { getLuxuryProduct } from '../data/luxuryCollections';
 import { useCartStore } from '../stores/cart';
 import { useRecentlyViewedStore } from '../stores/recentlyViewed';
 import ProductCard from '../components/ProductCard.vue';
@@ -163,16 +164,24 @@ const discountedPrice = computed(() => {
 onMounted(async () => {
   try {
     const id = route.params.id as string;
-    const response = await api.getProduct(id);
-    product.value = response.data;
+    const curatedProduct = getLuxuryProduct(id);
+    if (curatedProduct) {
+      product.value = {
+        ...curatedProduct,
+        images: curatedProduct.images.length > 0 ? curatedProduct.images : [curatedProduct.thumbnail]
+      };
+    } else {
+      const response = await api.getProduct(id);
+      product.value = response.data;
+    }
     activeImage.value = product.value.images[0] || product.value.thumbnail;
   } catch (err) {
     console.error('Failed to load product', err);
   } finally {
-  // After loading product, add to recently viewed
-  if (product.value) {
-    recentlyViewedStore.add(product.value);
-  }
+    isLoading.value = false;
+    if (product.value) {
+      recentlyViewedStore.add(product.value);
+    }
   }
 });
 

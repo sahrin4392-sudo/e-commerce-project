@@ -45,15 +45,71 @@
             <h3 class="text-3xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter leading-none">Curated Archive</h3>
           </div>
           <div class="flex flex-wrap gap-4 items-center justify-center lg:justify-end">
-            <button 
-              v-for="cat in productStore.categories.slice(0, 6)" 
-              :key="typeof cat === 'object' ? cat.slug : cat" 
-              @click="goToCategory(typeof cat === 'object' ? cat.slug : cat)" 
+            <router-link
+              v-for="cat in luxuryCollections.slice(0, 6)"
+              :key="cat.slug"
+              :to="`/collection/${cat.slug}`"
               class="px-8 py-3 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 text-[10px] tracking-[0.2em] uppercase hover:border-primary-500 hover:text-primary-500 transition-all rounded-full font-bold hover:bg-primary-500/5"
             >
-              {{ getCategoryName(cat) }}
-            </button>
+              {{ cat.title }}
+            </router-link>
           </div>
+        </div>
+      </section>
+
+      <!-- Shop By Categories -->
+      <section class="space-y-14">
+        <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+          <div class="max-w-3xl space-y-4">
+            <span class="luxury-label">Shop By Categories</span>
+            <h2 class="section-title">Cinematic Departments</h2>
+            <p class="text-base leading-8 text-slate-500 dark:text-slate-400">
+              Move through premium edits built around mood, material, and occasion. Each collection opens into a dedicated shopping room with refined products, filters, sorting, cart, and wishlist actions.
+            </p>
+          </div>
+          <router-link to="/categories" class="btn-secondary w-fit !rounded-full !border-slate-200 !px-8 dark:!border-white/10">
+            View Category Hall
+            <ArrowRightIcon class="h-4 w-4" />
+          </router-link>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <router-link
+            v-for="(category, index) in luxuryCollections"
+            :key="category.slug"
+            :to="`/collection/${category.slug}`"
+            :class="[
+              'group relative min-h-[28rem] overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950 shadow-2xl transition-all duration-700 hover:-translate-y-2 hover:shadow-primary-500/20',
+              index === 0 || index === 1 ? 'xl:col-span-2' : ''
+            ]"
+          >
+            <img
+              :src="category.image"
+              :alt="category.title"
+              class="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-[1400ms] ease-out group-hover:scale-110"
+              loading="lazy"
+            >
+            <div :class="['absolute inset-0 bg-gradient-to-t', category.accent]"></div>
+            <div class="absolute inset-0 bg-black/0 transition-colors duration-700 group-hover:bg-black/10"></div>
+            <div class="absolute left-6 top-6 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[9px] font-bold uppercase tracking-[0.25em] text-white/80 backdrop-blur-md">
+              {{ category.productCount }}
+            </div>
+            <div class="absolute inset-x-0 bottom-0 p-7 text-white md:p-9">
+              <span class="mb-4 block text-[10px] font-bold uppercase tracking-[0.35em] text-primary-300 transition-transform duration-500 group-hover:-translate-y-1">
+                {{ category.eyebrow }}
+              </span>
+              <h3 class="text-4xl font-bold uppercase leading-none tracking-tight md:text-5xl">
+                {{ category.title }}
+              </h3>
+              <p class="mt-5 max-w-xl text-sm leading-7 text-slate-200 opacity-90">
+                {{ category.description }}
+              </p>
+              <div class="mt-7 inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-950 shadow-xl transition-all duration-500 group-hover:bg-primary-500 group-hover:text-white dark:group-hover:text-dark-bg">
+                Explore Collection
+                <ArrowRightIcon class="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
+              </div>
+            </div>
+          </router-link>
         </div>
       </section>
 
@@ -86,7 +142,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto md:h-[1000px]">
           <router-link 
-            :to="{ path: '/products', query: { category: 'mens-shoes' } }" 
+            to="/collection/shoes" 
             class="md:col-span-8 relative group overflow-hidden rounded-[2.5rem] shadow-2xl transition-all duration-1000"
           >
             <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
@@ -102,7 +158,7 @@
           </router-link>
 
           <router-link 
-            :to="{ path: '/products', query: { category: 'mens-watches' } }" 
+            to="/collection/watches" 
             class="md:col-span-4 relative group overflow-hidden rounded-[2.5rem] shadow-2xl transition-all duration-1000"
           >
             <img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1000&q=80" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
@@ -167,14 +223,9 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { useProductStore } from '../stores/product';
 import ProductCard from '../components/ProductCard.vue';
 import { StarIcon, ArrowRightIcon } from 'lucide-vue-next';
-import { getCategoryName } from '../types';
-
-const router = useRouter();
-const productStore = useProductStore();
+import { luxuryCollections } from '../data/luxuryCollections';
 
 const featuredProductsCurated = [
   { id: 101, title: 'Heritage Sneakers', price: 180, thumbnail: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80', category: 'Footwear', rating: 4.9, discountPercentage: 10, brand: 'Heritage', description: 'Timeless silhouette reimagined.', stock: 5, images: [] },
@@ -182,9 +233,6 @@ const featuredProductsCurated = [
   { id: 103, title: 'Urban Veil Hoodie', price: 85, thumbnail: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=800&q=80', category: 'Apparel', rating: 4.7, discountPercentage: 15, brand: 'Urban', description: 'Minimalist warmth.', stock: 10, images: [] },
 ];
 
-function goToCategory(category: string) {
-  router.push({ path: '/products', query: { category } });
-}
 </script>
 
 <style scoped>

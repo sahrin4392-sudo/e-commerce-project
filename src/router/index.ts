@@ -6,6 +6,7 @@ const Home = () => import('../pages/Home.vue');
 const Products = () => import('../pages/Products.vue');
 const ProductDetail = () => import('../pages/ProductDetail.vue');
 const Categories = () => import('../pages/Categories.vue');
+const Collection = () => import('../pages/Collection.vue');
 const Signup = () => import('../pages/Signup.vue');
 const Login = () => import('../pages/Login.vue');
 const Cart = () => import('../pages/Cart.vue');
@@ -35,6 +36,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/categories',
     name: 'Categories',
     component: Categories,
+  },
+  {
+    path: '/collection/:slug',
+    name: 'Collection',
+    component: Collection,
   },
   {
     path: '/signup',
