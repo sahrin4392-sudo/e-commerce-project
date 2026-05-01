@@ -1,44 +1,12 @@
 <template>
-  <div class="flex flex-col gap-32 pb-32 overflow-hidden">
-    <!-- Hero Section -->
-    <section class="relative overflow-hidden bg-slate-950 text-white py-48 sm:py-64 flex items-center justify-center min-h-screen">
-      <div class="absolute inset-0 z-0">
-        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent"></div>
-        <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1788&q=80" alt="Hero background" class="w-full h-full object-cover mix-blend-overlay opacity-50 scale-105 animate-slow-zoom">
-      </div>
-      
-      <div class="relative z-10 max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 text-center sm:text-left w-full flex flex-col items-center sm:items-start">
-        <div class="overflow-hidden mb-6">
-          <span class="luxury-label !mb-0 animate-slide-up">The Future of Curation</span>
-        </div>
-        <h1 class="text-7xl sm:text-9xl font-light tracking-tighter mb-10 uppercase leading-[0.85] text-glow animate-fade-in">
-          Sahrin <br class="hidden sm:block" /> <span class="font-bold text-primary-500">Collective</span>
-        </h1>
-        <p class="mt-4 text-xl sm:text-2xl text-slate-300 max-w-2xl mb-16 font-light leading-relaxed animate-fade-in opacity-80">
-          Uncompromising craftsmanship. Exclusive design. Curated for the modern aesthete.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-8 animate-slide-up">
-          <router-link to="/products" class="btn-primary !px-16 !py-6 text-sm">
-            Shop Collection
-          </router-link>
-          <router-link to="/categories" class="btn-secondary !px-16 !py-6 text-sm backdrop-blur-md">
-            Categories
-          </router-link>
-        </div>
-      </div>
-      
-      <!-- Scroll Indicator -->
-      <div class="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce hidden lg:block">
-        <div class="w-7 h-12 border-2 border-white/20 rounded-full flex justify-center p-2">
-          <div class="w-1.5 h-3 bg-primary-500 rounded-full"></div>
-        </div>
-      </div>
-    </section>
+  <div class="flex flex-col gap-28 pb-32 overflow-hidden">
+    <LuxuryHeroCarousel />
+    <LuxuryMarquee />
 
-    <div class="page-container space-y-48 !py-0">
+    <div class="page-container space-y-40 !py-0">
       
       <!-- Quick Collections Spotlight -->
-      <section class="glass-card !p-10 sm:!p-16 -mt-48 relative z-20 mx-auto max-w-6xl">
+      <section class="glass-card cinematic-reveal !p-10 sm:!p-16 -mt-28 relative z-20 mx-auto max-w-6xl">
         <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
           <div class="space-y-4 text-center lg:text-left">
             <span class="luxury-label">Discovery Mode</span>
@@ -57,8 +25,37 @@
         </div>
       </section>
 
+      <!-- Trending Now -->
+      <section class="cinematic-reveal space-y-14">
+        <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+          <div class="max-w-3xl space-y-4">
+            <span class="luxury-label">Trending Now</span>
+            <h2 class="section-title">Objects Of Desire</h2>
+            <p class="text-base leading-8 text-slate-500 dark:text-slate-400">
+              Fast-moving icons from the collection floor, styled with glowing badges, floating offers, and quick cart access.
+            </p>
+          </div>
+          <router-link to="/products" class="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 transition-colors hover:text-primary-500">
+            View All Trending
+            <ArrowRightIcon class="h-4 w-4 transition-transform group-hover:translate-x-2" />
+          </router-link>
+        </div>
+
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <TrendingProductCard
+            v-for="(item, index) in trendingProducts"
+            :key="item.product.id"
+            :product="item.product"
+            :sticker="item.sticker"
+            :is-new="index < 3"
+          />
+        </div>
+      </section>
+
+      <LimitedOfferCountdown />
+
       <!-- Shop By Categories -->
-      <section class="space-y-14">
+      <section class="cinematic-reveal space-y-14">
         <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div class="max-w-3xl space-y-4">
             <span class="luxury-label">Shop By Categories</span>
@@ -114,7 +111,7 @@
       </section>
 
       <!-- Featured Products -->
-      <section id="featured">
+      <section id="featured" class="cinematic-reveal">
         <div class="flex flex-col sm:flex-row justify-between items-end mb-20 gap-8">
           <div class="space-y-4">
             <span class="luxury-label">Premium Selections</span>
@@ -133,7 +130,7 @@
       </section>
 
       <!-- Premium Collections Gallery -->
-      <section class="space-y-20">
+      <section class="cinematic-reveal space-y-20">
         <div class="text-center space-y-6">
           <span class="luxury-label">Conceptual Space</span>
           <h2 class="text-5xl md:text-8xl font-bold text-slate-900 dark:text-white uppercase tracking-tighter leading-none">Masterpieces</h2>
@@ -175,7 +172,7 @@
       </section>
 
       <!-- Customer Reviews -->
-      <section class="py-32 px-12 md:px-24 glass-card">
+      <section class="cinematic-reveal py-32 px-12 md:px-24 glass-card">
         <div class="text-center mb-24 space-y-4">
           <span class="luxury-label">Verified Testimonials</span>
           <h2 class="text-4xl md:text-6xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white leading-none">The Collective Voice</h2>
@@ -203,7 +200,7 @@
       </section>
       
       <!-- Newsletter -->
-      <section class="relative bg-slate-950 rounded-[3rem] p-16 sm:p-32 text-center overflow-hidden shadow-3xl">
+      <section class="cinematic-reveal relative bg-slate-950 rounded-[3rem] p-16 sm:p-32 text-center overflow-hidden shadow-3xl">
         <div class="absolute inset-0 bg-primary-500/5 mix-blend-overlay"></div>
         <div class="absolute -top-32 -left-32 w-80 h-80 bg-primary-500/10 rounded-full blur-[100px] animate-pulse"></div>
         
@@ -224,8 +221,19 @@
 
 <script setup lang="ts">
 import ProductCard from '../components/ProductCard.vue';
+import LimitedOfferCountdown from '../components/home/LimitedOfferCountdown.vue';
+import LuxuryHeroCarousel from '../components/home/LuxuryHeroCarousel.vue';
+import LuxuryMarquee from '../components/home/LuxuryMarquee.vue';
+import TrendingProductCard from '../components/home/TrendingProductCard.vue';
 import { StarIcon, ArrowRightIcon } from 'lucide-vue-next';
 import { luxuryCollections } from '../data/luxuryCollections';
+
+const trendingProducts = [
+  { product: luxuryCollections[1].products[0], sticker: 'Hot Deal' },
+  { product: luxuryCollections[3].products[1], sticker: 'Exclusive' },
+  { product: luxuryCollections[4].products[0], sticker: '50% Off' },
+  { product: luxuryCollections[7].products[2], sticker: 'Rare Drop' },
+];
 
 const featuredProductsCurated = [
   { id: 101, title: 'Heritage Sneakers', price: 180, thumbnail: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80', category: 'Footwear', rating: 4.9, discountPercentage: 10, brand: 'Heritage', description: 'Timeless silhouette reimagined.', stock: 5, images: [] },
@@ -234,13 +242,3 @@ const featuredProductsCurated = [
 ];
 
 </script>
-
-<style scoped>
-@keyframes slowZoom {
-  from { transform: scale(1); }
-  to { transform: scale(1.1); }
-}
-.animate-slow-zoom {
-  animation: slowZoom 30s linear infinite alternate;
-}
-</style>
